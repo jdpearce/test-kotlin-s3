@@ -1,4 +1,5 @@
 build
+.env
 
 # IDEs and editors
 .idea/*

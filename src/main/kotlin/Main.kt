@@ -12,7 +12,7 @@ const val REGION = "us-west-2"
 val BUCKET = "bucket-${UUID.randomUUID()}"
 const val KEY = "key"
 
-fun main(args: Array<String>) {
+fun main() {
     log.info("AWS_ACCESS_KEY_ID = ${System.getenv("AWS_ACCESS_KEY_ID")}")
 //    log.info("AWS_SECRET_ACCESS_KEY = ${System.getenv("AWS_SECRET_ACCESS_KEY")}")
 

@@ -1,7 +1,5 @@
 FROM openjdk:14
-RUN mkdir -p /srv/nx-api
-WORKDIR /srv/nx-api
-COPY ./libs/nx-api-all.jar nx-api.jar
-COPY ./libs/aggregator-all.jar aggregator.jar
-EXPOSE 8080
-CMD java -Xmx800m -jar ./nx-api.jar
+RUN mkdir -p /srv/test-kotlin-s3
+WORKDIR /srv/test-kotlin-s3
+COPY ./libs/*-all.jar test-kotlin-s3.jar
+CMD java -Xmx800m -jar ./test-kotlin-s3.jar
