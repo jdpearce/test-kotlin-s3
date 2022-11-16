@@ -1,0 +1,9 @@
+build
+
+# IDEs and editors
+.idea/*
+!.idea/codeStyles
+.project
+.classpath
+.c9/
+.gradle
