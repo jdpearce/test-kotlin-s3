@@ -21,6 +21,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     implementation("aws.sdk.kotlin:s3:0.17.12-beta")
     implementation("aws.sdk.kotlin:iam:0.17.12-beta")
+    implementation("com.amazonaws:aws-java-sdk-s3:1.12.338")
+    implementation("javax.xml.bind:jaxb-api:2.3.1")
     implementation("org.slf4j:slf4j-api:2.0.3")
     implementation("ch.qos.logback:logback-classic:1.4.4")
 }
