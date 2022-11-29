@@ -10,14 +10,18 @@ import com.amazonaws.services.s3.S3ClientOptions
 import com.amazonaws.services.securitytoken.AWSSecurityTokenServiceClientBuilder
 import com.amazonaws.services.securitytoken.model.AssumeRoleRequest
 import com.amazonaws.services.securitytoken.model.AssumeRoleResult
+import com.amazonaws.services.securitytoken.model.AssumeRoleWithWebIdentityRequest
+import com.amazonaws.services.securitytoken.model.AssumeRoleWithWebIdentityResult
 import com.amazonaws.services.securitytoken.model.Credentials
 import org.slf4j.LoggerFactory.getLogger
+import java.io.File
 import java.util.*
 
 private val log = getLogger("AwsTest")
 
-const val REGION = "us-west-2"
-val BUCKET = "bucket-${UUID.randomUUID()}"
+const val REGION = "us-east-1"
+val BUCKET = "nx-cache-dev"
+//val BUCKET = "bucket-${UUID.randomUUID()}"
 const val KEY = "key"
 
 /**
@@ -45,14 +49,16 @@ fun main() {
 
         val stsClient = AWSSecurityTokenServiceClientBuilder.standard()
             .withCredentials(DefaultAWSCredentialsProviderChain.getInstance())
-            .withRegion(Regions.DEFAULT_REGION)
+            .withRegion(Regions.US_EAST_1)
             .build()
 
-        val roleRequest = AssumeRoleRequest()
+        val token = File(env["AWS_WEB_IDENTITY_TOKEN_FILE"]).readText()
+        val roleRequest = AssumeRoleWithWebIdentityRequest()
             .withRoleArn(env["AWS_ROLE_ARN"])
+            .withWebIdentityToken(token)
             .withRoleSessionName("nxApiRoleSession")
 
-        val roleResponse: AssumeRoleResult = stsClient.assumeRole(roleRequest)
+        val roleResponse: AssumeRoleWithWebIdentityResult = stsClient.assumeRoleWithWebIdentity(roleRequest)
         val sessionCredentials: Credentials = roleResponse.credentials
 
         AmazonS3ClientBuilder.standard()
@@ -65,7 +71,7 @@ fun main() {
                     )
                 )
             )
-            .withRegion(Regions.DEFAULT_REGION)
+            .withRegion(Regions.US_EAST_1)
             .build()
     } else if (env.containsKey("AWS_ACCESS_KEY_ID") && env.containsKey("AWS_SECRET_ACCESS_KEY")) {
         log.info("AWS_ACCESS_KEY_ID provided, creating client the old-fashioned way.")
@@ -75,7 +81,7 @@ fun main() {
                     BasicAWSCredentials(env["AWS_ACCESS_KEY_ID"], env["AWS_SECRET_ACCESS_KEY"])
                 )
             )
-            .withRegion(Regions.DEFAULT_REGION)
+            .withRegion(Regions.US_EAST_1)
             .build()
     } else {
         val message = "No S3 credentials provided"
@@ -90,11 +96,10 @@ fun main() {
         s3.setS3ClientOptions(S3ClientOptions.builder().setAccelerateModeEnabled(true).build())
     }
 
-    setupTutorial(s3)
+//    setupTutorial(s3)
 
     s3.putObject(BUCKET, KEY, "Testing with Kotlin SDK")
     log.info("Object $BUCKET/$KEY created successfully!")
-
     cleanUp(s3)
 }
 
@@ -110,7 +115,7 @@ fun cleanUp(s3: AmazonS3) {
     s3.deleteObject(BUCKET, KEY)
     log.info("Object $BUCKET/$KEY deleted successfully!")
 
-    log.info("Deleting bucket $BUCKET...")
-    s3.deleteBucket(BUCKET)
-    log.info("Bucket $BUCKET deleted successfully!")
+//    log.info("Deleting bucket $BUCKET...")
+//    s3.deleteBucket(BUCKET)
+//    log.info("Bucket $BUCKET deleted successfully!")
 }
