@@ -16,6 +16,7 @@ import com.amazonaws.services.securitytoken.model.Credentials
 import org.slf4j.LoggerFactory.getLogger
 import java.io.File
 import java.util.*
+import java.util.logging.Handler
 
 private val log = getLogger("AwsTest")
 
@@ -98,9 +99,19 @@ fun main() {
 
 //    setupTutorial(s3)
 
-    s3.putObject(BUCKET, KEY, "Testing with Kotlin SDK")
-    log.info("Object $BUCKET/$KEY created successfully!")
-    cleanUp(s3)
+    log.info("Starting timer with delay....")
+
+    val timer = Timer()
+    timer.schedule(object : TimerTask() {
+        override fun run() {
+            println("Executing with delay...")
+            s3.putObject(BUCKET, KEY, "Testing with Kotlin SDK")
+            log.info("Object $BUCKET/$KEY created successfully!")
+            cleanUp(s3)
+        }
+    }, 0, 60000)
+
+
 }
 
 

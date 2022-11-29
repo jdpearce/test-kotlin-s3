@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-kotlin-app
+spec:
+  selector:
+    matchLabels:
+      app: test-kotlin-app
+  template:
+    metadata:
+      labels:
+        app: test-kotlin-app
+    spec:
+      serviceAccountName: iam-test-access
+      containers:
+        - name: nx-cloud-nx-api
+          image: nrwljohanna/testing:test-kotlin-s3
+          resources:
+                requests:
+                  memory: '500Mi'
+                  cpu: '0.2'
+          imagePullPolicy: Always
